@@ -1,28 +1,25 @@
-import {
-  blue, green, red, yellow,
-} from 'colorette';
-import { LoggerTypes } from '../types';
+import AbstractLoggerProvider from './abstracts/AbstractLoggerProvider';
 
 export default class Logger {
-  private readonly logger: LoggerTypes;
+  private readonly logger: AbstractLoggerProvider;
 
-  constructor(logger: LoggerTypes) {
+  constructor(logger: AbstractLoggerProvider) {
     this.logger = logger;
   }
 
   public info(msg: string): void {
-    this.logger.info(`[*] ${green(msg)}`);
+    this.logger.info(msg);
   }
 
   public warn(msg: string): void {
-    this.logger.warn(`[*] ${yellow(msg)}`);
+    this.logger.warn(msg);
   }
 
   public debug(msg: string): void {
-    this.logger.debug(`[+] ${blue(msg)}`);
+    this.logger.debug(msg);
   }
 
   public error(msg: string): void {
-    this.logger.error(`[-] ${red(msg)}`);
+    this.logger.error(msg);
   }
 }

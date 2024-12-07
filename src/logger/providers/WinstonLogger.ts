@@ -1,5 +1,8 @@
 import winston from 'winston';
 import * as _ from 'lodash';
+import {
+  blue, green, red, yellow,
+} from 'colorette';
 import { WinstonLoggerLevels } from '../../types';
 import AbstractLoggerProvider from '../abstracts/AbstractLoggerProvider';
 
@@ -32,7 +35,19 @@ export default class WinstonLogger extends AbstractLoggerProvider {
     this.winstonLogger = winston.createLogger(this.winstonLoggerOptions);
   }
 
-  public getLoggerInstance(): winston.Logger {
-    return this.winstonLogger;
+  public info(msg: string): void {
+    this.winstonLogger.info(`[*] ${green(msg)}`);
+  }
+
+  public warn(msg: string): void {
+    this.winstonLogger.warn(`[*] ${yellow(msg)}`);
+  }
+
+  public debug(msg: string): void {
+    this.winstonLogger.debug(`[+] ${blue(msg)}`);
+  }
+
+  public error(msg: string): void {
+    this.winstonLogger.error(`[-] ${red(msg)}`);
   }
 }

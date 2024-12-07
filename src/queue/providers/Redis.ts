@@ -1,38 +1,23 @@
-import { createClient, RedisClientType } from 'redis';
+import Redis from 'ioredis';
+import { LooseObject } from '../../types';
 import AbstractQueueProvider from '../abstracts/AbstractQueueProvider';
-import BaseError from '../../errors/base-error';
-import ErrorTypes from '../../errors/error-types';
 import Logger from '../../logger/Logger';
 
-export default class Redis extends AbstractQueueProvider {
-  private readonly redisUrl: string;
+export default class RedisProvider extends AbstractQueueProvider {
+  private redisClient: any;
 
-  private readonly logger: Logger;
-
-  private redisClient: RedisClientType;
-
-  constructor(redisUrl: string, logger: Logger) {
-    super();
-    this.redisUrl = redisUrl;
-    this.logger = logger;
+  constructor(logger: Logger) {
+    super(logger);
+    this.redisClient = new Redis({
+      port: +process.env.REDIS_PORT,
+      host: process.env.REDIS_HOST,
+    });
   }
 
-  public async initialize(): Promise<void> | never {
-    try {
-      // eslint-disable-next-line @typescript-eslint/await-thenable
-      this.redisClient = await createClient({ url: this.redisUrl });
-      this.logger.info(`Redis connection establised successfully : ${this.redisUrl}`);
-    } catch (e) {
-      const errorMessage = e instanceof Error ? e.message : 'Unknown error occurred';
-      this.logger.error(`${errorMessage}`);
-      throw new BaseError(
-        ErrorTypes.REDIS_CONNECTION_ERROR,
-        errorMessage,
-      );
-    }
-  }
-
-  public getInstance(): RedisClientType {
-    return this.redisClient;
+  public async add(queueName: string, payload: LooseObject): Promise<string> {
+    const stringPayload = JSON.stringify(payload);
+    // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
+    const id = <string>(await this.redisClient.xadd(queueName, '*', stringPayload, Math.random()));
+    return id;
   }
 }
