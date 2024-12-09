@@ -1,6 +1,3 @@
-import winston from 'winston';
-import { RedisClientType } from 'redis';
-
 export type LooseObject = {
   [key: string]: any;
 };
@@ -15,6 +12,13 @@ export type QueueReadInfo = {
   payload: LooseObject;
 };
 
+export type ConsumerGroupInfo = {
+  groupName: string;
+  consumers: number;
+  pendingMessages: number;
+  lastDeliveredId: string;
+};
+
 export enum WinstonLoggerLevels {
   ERROR = 'error',
   WARN = 'warn',
@@ -24,6 +28,3 @@ export enum WinstonLoggerLevels {
   DEBUG = 'debug',
   SILLY = 'silly',
 }
-
-export type QueueManagerType = RedisClientType;
-export type LoggerTypes = winston.Logger;

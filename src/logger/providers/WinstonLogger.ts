@@ -35,19 +35,19 @@ export default class WinstonLogger extends AbstractLoggerProvider {
     this.winstonLogger = winston.createLogger(this.winstonLoggerOptions);
   }
 
-  public info(msg: string): void {
+  public info(msg = ''): void {
     this.winstonLogger.info(`[*] ${green(msg)}`);
   }
 
-  public warn(msg: string): void {
+  public warn(msg = ''): void {
     this.winstonLogger.warn(`[*] ${yellow(msg)}`);
   }
 
-  public debug(msg: string): void {
+  public debug(msg = ''): void {
     this.winstonLogger.debug(`[+] ${blue(msg)}`);
   }
 
-  public error(msg: string): void {
+  public error(msg = ''): void {
     this.winstonLogger.error(`[-] ${red(msg)}`);
   }
 }

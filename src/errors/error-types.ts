@@ -1,5 +1,7 @@
 enum ErrorTypes {
   REDIS_CONNECTION_ERROR = 'REDIS_CONNECTION_ERROR',
+  QUEUE_ERROR = 'QUEUE_ERROR',
+  PAYLOAD_ERROR = 'PAYLOAD_ERROR',
 }
 
 export default ErrorTypes;
