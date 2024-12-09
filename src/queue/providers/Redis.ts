@@ -17,7 +17,6 @@ export default class RedisProvider extends AbstractQueueProvider {
   public async add(queueName: string, payload: LooseObject): Promise<string> {
     const stringPayload = JSON.stringify(payload);
     // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
-    const id = <string>(await this.redisClient.xadd(queueName, '*', stringPayload, Math.random()));
-    return id;
+    return <string>(await this.redisClient.xadd(queueName, '*', stringPayload, Math.random()));
   }
 }
