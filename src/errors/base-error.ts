@@ -1,6 +1,6 @@
 import ErrorTypes from './error-types';
 
-export default class BaseError extends Error {
+export default class ExtendedError extends Error {
   public readonly errorCode: number;
 
   public readonly errorType: ErrorTypes;

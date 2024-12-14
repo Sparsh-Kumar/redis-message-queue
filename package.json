@@ -47,7 +47,7 @@
     "eslint-plugin-import": "^2.26.0",
     "gulp": "^5.0.0",
     "gulp-typescript": "^6.0.0-alpha.1",
-    "husky": "^9.1.7",
+    "husky": "^4.3.8",
     "mocha": "^10.0.0",
     "sinon": "^19.0.2",
     "ts-mocha": "^10.0.0",

@@ -1,4 +1,7 @@
-import { ConsumerGroupInfo, LooseObject } from '../types';
+import { LooseObject } from '../types';
+import {
+  AcknowledgeMessagePayload, ConsumerGroupInfo, ConsumerGroupReadInputPayload, QueueAdditionPayload,
+} from './types';
 import AbstractQueueProvider from './abstracts/AbstractQueueProvider';
 
 export default class Queue {
@@ -11,8 +14,8 @@ export default class Queue {
     this.queueProvider = queueProvider;
   }
 
-  public async add(payload: LooseObject = {}): Promise<string> {
-    return this.queueProvider.add(this.name, payload);
+  public async addToQueue(params: QueueAdditionPayload): Promise<string> {
+    return this.queueProvider.addToQueue(this.name, params);
   }
 
   public async createConsumerGroup(): Promise<string> {
@@ -22,5 +25,19 @@ export default class Queue {
   public async getConsumerGroupsInfo(): Promise<ConsumerGroupInfo[]> {
     const consumerGroupsInfo = await this.queueProvider.consumerGroupInfo(this.name);
     return consumerGroupsInfo;
+  }
+
+  public async readFromConsumerGroup(
+    params: ConsumerGroupReadInputPayload,
+  ): Promise<LooseObject[]> {
+    const { consumerGroupName = '', consumerName = '' } = params;
+    return this.queueProvider.readFromConsumerGroup(this.name, consumerGroupName, consumerName);
+  }
+
+  public async ackMessageInGroup(
+    params: AcknowledgeMessagePayload,
+  ): Promise<void> {
+    const { consumerGroupName = '', messageId = '' } = params;
+    return this.queueProvider.ackMessageInGroup(this.name, consumerGroupName, messageId);
   }
 }

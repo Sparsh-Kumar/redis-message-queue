@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {
   blue, green, red, yellow,
 } from 'colorette';
-import { WinstonLoggerLevels } from '../../types';
+import { WinstonLoggerLevels } from '../types';
 import AbstractLoggerProvider from '../abstracts/AbstractLoggerProvider';
 
 export default class WinstonLogger extends AbstractLoggerProvider {

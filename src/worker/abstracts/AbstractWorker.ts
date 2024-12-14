@@ -1,9 +1,16 @@
-import AbstractQueueProvider from '../../queue/abstracts/AbstractQueueProvider';
+import Queue from '../../queue/Queue';
+import { WorkerSubscriptionPayload } from '../types';
 
 export default abstract class AbstractWorker {
-  private readonly queue: AbstractQueueProvider;
+  protected readonly queue: Queue;
 
-  constructor(queue: AbstractQueueProvider) {
+  protected readonly consumerName: string;
+
+  constructor(queue: Queue, consumerName = '') {
     this.queue = queue;
+    this.consumerName = consumerName;
   }
+  abstract subscribe(
+    params: WorkerSubscriptionPayload,
+  ): Promise<void>;
 }
