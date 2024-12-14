@@ -4,5 +4,4 @@ export type CallBackFunction = (data: LooseObject) => Promise<LooseObject> | Loo
 
 export type WorkerSubscriptionPayload = {
   callback: CallBackFunction;
-  consumerGroupName: string;
 };

@@ -1,24 +1,22 @@
 import Logger from '../../logger/Logger';
 import { LooseObject } from '../../types';
-import { ConsumerGroupInfo } from '../types';
+import { ConsumerGroupInfo, QueueProvider } from '../types';
 
 export default abstract class AbstractQueueProvider {
+  protected readonly queueProvider: QueueProvider;
+
   protected readonly logger: Logger;
 
-  constructor(logger: Logger) {
+  constructor(
+    queueProvider: QueueProvider,
+    logger: Logger,
+  ) {
+    this.queueProvider = queueProvider;
     this.logger = logger;
   }
   abstract addToQueue(queueName: string, payload: LooseObject): Promise<string>;
-  abstract createConsumerGroup(queueName: string): Promise<string>;
-  abstract consumerGroupInfo(queueName: string): Promise<ConsumerGroupInfo[]>;
-  abstract readFromConsumerGroup(
+  abstract consumerGroupInfo(
     queueName: string,
-    consumerGroupName: string,
-    consumerName: string,
-  ): Promise<LooseObject[]>;
-  abstract ackMessageInGroup(
-    queueName: string,
-    consumerGroupName: string,
-    messageId: string
-  ): Promise<void>;
+    consumerGroupName: string
+  ): Promise<ConsumerGroupInfo[]>;
 }
