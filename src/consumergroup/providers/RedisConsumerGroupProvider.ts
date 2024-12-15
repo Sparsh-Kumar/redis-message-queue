@@ -1,4 +1,3 @@
-import Redis from 'ioredis';
 import * as _ from 'lodash';
 import { LooseObject } from '../../types';
 import AbstractConsumerGroupProvider from '../abstracts/AbstractConsumerGroupProvider';
@@ -6,15 +5,13 @@ import ExtendedError from '../../errors/base-error';
 import ErrorTypes from '../../errors/error-types';
 
 export default class RedisConsumerGroupProvider extends AbstractConsumerGroupProvider {
-  private redisClient: Redis;
-
   public async createConsumerGroup(
     queueName = '',
     consumerGroupName = '',
   ): Promise<string> {
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
     if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name');
-    await this.redisClient.call('XGROUP', 'CREATE', queueName, consumerGroupName, '0', 'MKSTREAM');
+    await this.consumerGroupProvider.call('XGROUP', 'CREATE', queueName, consumerGroupName, '0', 'MKSTREAM');
     return consumerGroupName;
   }
 
@@ -26,7 +23,7 @@ export default class RedisConsumerGroupProvider extends AbstractConsumerGroupPro
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
     if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name.');
     if (!consumerName) throw new ExtendedError(ErrorTypes.CONSUMER_ERROR, 'Please provide a non empty consumer name.');
-    const consumerGroupData = <LooseObject[]> await this.redisClient.call(
+    const consumerGroupData = <LooseObject[]> await this.consumerGroupProvider.call(
       'XREADGROUP',
       'GROUP',
       consumerGroupName,
@@ -48,7 +45,7 @@ export default class RedisConsumerGroupProvider extends AbstractConsumerGroupPro
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
     if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name.');
     if (!messageId) throw new ExtendedError(ErrorTypes.MESSAGE_ID_ERROR, 'Please provide a non empty message Id.');
-    await this.redisClient.call(
+    await this.consumerGroupProvider.call(
       'XACK',
       queueName,
       consumerGroupName,
