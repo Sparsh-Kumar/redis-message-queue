@@ -15,6 +15,8 @@ export default abstract class AbstractQueueProvider {
     this.logger = logger;
   }
   abstract addToQueue(queueName: string, payload: LooseObject): Promise<string>;
+  abstract fetchAllRecords(queueName: string): Promise<LooseObject[]>;
+  abstract deleteQueue(queueName: string): Promise<void>;
   abstract consumerGroupInfo(
     queueName: string,
     consumerGroupName: string

@@ -16,11 +16,21 @@ export default class RedisQueueProvider extends AbstractQueueProvider {
     return (this.queueProvider.xadd(queueName, '*', stringPayload, Math.random()));
   }
 
+  public async fetchAllRecords(queueName = ''): Promise<LooseObject[]> {
+    if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
+    return (this.queueProvider.xrange(queueName, '-', '+'));
+  }
+
+  public async deleteQueue(queueName = ''): Promise<void> {
+    if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
+    await this.queueProvider.del(queueName);
+  }
+
   public async consumerGroupInfo(
     queueName = '',
   ): Promise<ConsumerGroupInfo[]> {
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
-    const consumerGroupInfo: LooseObject[] = <LooseObject[]> await this.queueProvider.call('XINFO', 'GROUPS', queueName);
+    const consumerGroupInfo: LooseObject[] = <LooseObject[]>await this.queueProvider.call('XINFO', 'GROUPS', queueName);
     return consumerGroupInfo.map((group: LooseObject) => ({
       groupName: <string>group[1],
       consumers: <number>group[3],
