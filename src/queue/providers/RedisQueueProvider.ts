@@ -30,7 +30,7 @@ export default class RedisQueueProvider extends AbstractQueueProvider {
     queueName = '',
   ): Promise<ConsumerGroupInfo[]> {
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
-    const consumerGroupInfo: LooseObject[] = <LooseObject[]>await this.queueProvider.call('XINFO', 'GROUPS', queueName);
+    const consumerGroupInfo: LooseObject[] = <LooseObject[]> await this.queueProvider.call('XINFO', 'GROUPS', queueName);
     return consumerGroupInfo.map((group: LooseObject) => ({
       groupName: <string>group[1],
       consumers: <number>group[3],

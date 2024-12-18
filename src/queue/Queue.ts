@@ -1,8 +1,8 @@
+import { LooseObject } from '../types';
 import {
   QueueAdditionPayload,
 } from './types';
 import AbstractQueueProvider from './abstracts/AbstractQueueProvider';
-import { LooseObject } from 'src/types';
 
 export default class Queue {
   private readonly name: string;
