@@ -1,5 +1,5 @@
 import dotenv from 'dotenv';
-import chai from 'chai';
+import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
 import chaiHttp from 'chai-http';
 import Redis from 'ioredis';
@@ -42,6 +42,15 @@ describe('Queue', () => {
 
   afterEach(() => {
     sinonSandbox.restore();
+  });
+
+  after(() => {
+
+  });
+
+  it('Queue: Getting the name of the Queue.', async () => {
+    const name = queue.getName();
+    expect(name).to.equal(queueName);
   });
 
   it('Queue: Pushing stream data into the Queue.', async () => {
