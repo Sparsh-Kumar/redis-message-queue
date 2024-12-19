@@ -52,4 +52,8 @@ export default class Worker extends AbstractWorker {
       }
     }
   }
+
+  public getName(): string {
+    return this.consumerName;
+  }
 }

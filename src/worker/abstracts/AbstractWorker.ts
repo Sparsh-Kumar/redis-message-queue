@@ -16,4 +16,5 @@ export default abstract class AbstractWorker {
   abstract subscribe(
     params: WorkerSubscriptionPayload,
   ): Promise<void>;
+  abstract getName(): string;
 }
