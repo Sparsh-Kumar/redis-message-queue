@@ -26,6 +26,11 @@ export default class RedisQueueProvider extends AbstractQueueProvider {
     await this.queueProvider.del(queueName);
   }
 
+  public async getConsumerGroups(queueName = ''): Promise<LooseObject> {
+    if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
+    return (this.queueProvider.xinfo('GROUPS', queueName));
+  }
+
   public async consumerGroupInfo(
     queueName = '',
   ): Promise<ConsumerGroupInfo[]> {

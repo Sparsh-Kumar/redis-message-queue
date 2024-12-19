@@ -7,11 +7,9 @@ export type CreateConsumerGroupPayload = {
 };
 
 export type ConsumerGroupReadInputPayload = {
-  queueName: string;
   consumerName: string;
 };
 
 export type AcknowledgeMessagePayload = {
-  queueName: string;
   messageId: string;
 };

@@ -3,18 +3,15 @@
 import { AcknowledgeMessagePayload } from '../consumergroup/types';
 import { WorkerSubscriptionPayload } from './types';
 import AbstractWorker from './abstracts/AbstractWorker';
-import Queue from '../queue/Queue';
 import { LooseObject } from '../types';
 import ConsumerGroup from '../consumergroup/ConsumerGroup';
 
 export default class Worker extends AbstractWorker {
   constructor(
-    queue: Queue,
     consumerGroup: ConsumerGroup,
     consumerName = '',
   ) {
     super(
-      queue,
       consumerGroup,
       consumerName,
     );
@@ -23,11 +20,9 @@ export default class Worker extends AbstractWorker {
   public async subscribe(params: WorkerSubscriptionPayload): Promise<void> {
     const defaultFunc = (arg) => { console.log(arg); };
     const { callback = defaultFunc } = params;
-    const queueName = this.queue.getName();
 
     while (true) {
       const result = await this.consumerGroup.readFromConsumerGroup({
-        queueName,
         consumerName: this.consumerName,
       });
 
@@ -47,7 +42,6 @@ export default class Worker extends AbstractWorker {
           const [message] = payloadInfo;
           const parsedMessage = <LooseObject>(JSON.parse(message));
           const ackPayload: AcknowledgeMessagePayload = {
-            queueName,
             messageId,
           };
           await callback(parsedMessage);

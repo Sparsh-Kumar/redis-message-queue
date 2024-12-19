@@ -26,7 +26,7 @@ let queue: Queue;
 let queueForDeletion: Queue;
 let numberOfRecords = 100;
 
-describe('Queue', () => {
+describe('Queue:', () => {
 
   before(async () => {
     queueName = `queue_${generateRandomName()}`;

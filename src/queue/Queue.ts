@@ -29,6 +29,10 @@ export default class Queue {
     return this.queueProvider.deleteQueue(this.name);
   }
 
+  public async getConsumerGroups(): Promise<LooseObject> {
+    return (this.queueProvider.getConsumerGroups(this.name));
+  }
+
   public getName(): string {
     return this.name;
   }

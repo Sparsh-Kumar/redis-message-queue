@@ -21,4 +21,5 @@ export default abstract class AbstractQueueProvider {
     queueName: string,
     consumerGroupName: string
   ): Promise<ConsumerGroupInfo[]>;
+  abstract getConsumerGroups(queueName: string): Promise<LooseObject>;
 }

@@ -52,4 +52,17 @@ export default class RedisConsumerGroupProvider extends AbstractConsumerGroupPro
       messageId,
     );
   }
+
+  public async destroyConsumerGroup(
+    queueName = '',
+    consumerGroupName = '',
+  ): Promise<void> {
+    if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
+    if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name.');
+    await this.consumerGroupProvider.xgroup(
+      'DESTROY',
+      queueName,
+      consumerGroupName,
+    );
+  }
 }

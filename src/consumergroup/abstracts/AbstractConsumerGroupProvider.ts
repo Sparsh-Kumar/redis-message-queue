@@ -28,4 +28,8 @@ export default abstract class AbstractConsumerGroupProvider {
     consumerGroupName: string,
     messageId: string
   ): Promise<void>;
+  abstract destroyConsumerGroup(
+    queueName: string,
+    consumerGroupName: string,
+  ): Promise<void>;
 }
