@@ -30,11 +30,12 @@ export default class ConsumerGroup {
   public async readFromConsumerGroup(
     params: ConsumerGroupReadInputPayload,
   ): Promise<LooseObject[]> {
-    const { consumerName = '' } = params;
+    const { consumerName = '', count = +process.env.CONCURRENCY } = params;
     return this.consumerGroupProvider.readFromConsumerGroup(
       this.queue.getName(),
       this.consumerGroupName,
       consumerName,
+      count,
     );
   }
 

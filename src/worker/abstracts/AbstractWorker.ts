@@ -1,3 +1,4 @@
+import { LooseObject } from '../../types';
 import ConsumerGroup from '../../consumergroup/ConsumerGroup';
 import { WorkerSubscriptionPayload } from '../types';
 
@@ -15,6 +16,6 @@ export default abstract class AbstractWorker {
   }
   abstract subscribe(
     params: WorkerSubscriptionPayload,
-  ): Promise<void>;
+  ): Promise<void | LooseObject[]>;
   abstract getName(): string;
 }

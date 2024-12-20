@@ -22,6 +22,7 @@ export default abstract class AbstractConsumerGroupProvider {
     queueName: string,
     consumerGroupName: string,
     consumerName: string,
+    count: number,
   ): Promise<LooseObject[]>;
   abstract ackMessageInConsumerGroup(
     queueName: string,

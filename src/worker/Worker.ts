@@ -17,13 +17,20 @@ export default class Worker extends AbstractWorker {
     );
   }
 
-  public async subscribe(params: WorkerSubscriptionPayload): Promise<void> {
+  public async subscribe(params: WorkerSubscriptionPayload): Promise<void | LooseObject[]> {
     const defaultFunc = (arg) => { console.log(arg); };
-    const { callback = defaultFunc } = params;
+    const completionResultArr: LooseObject[] = [];
+    const {
+      callback = defaultFunc,
+      count = +process.env.CONCURRENCY,
+      breakOnCompletion = false,
+      saveCompletionResult = false,
+    } = params;
 
     while (true) {
       const result = await this.consumerGroup.readFromConsumerGroup({
         consumerName: this.consumerName,
+        count,
       });
 
       let items: [string, [string]][] = [];
@@ -35,6 +42,7 @@ export default class Worker extends AbstractWorker {
       ) {
         [[, items]] = result;
       }
+      if (!items?.length && breakOnCompletion) return completionResultArr;
       for (let i = 0; i < items?.length; i += 1) {
         const item = items[i];
         try {
@@ -44,7 +52,8 @@ export default class Worker extends AbstractWorker {
           const ackPayload: AcknowledgeMessagePayload = {
             messageId,
           };
-          await callback(parsedMessage);
+          const finalResult = await callback(parsedMessage);
+          if (saveCompletionResult) completionResultArr.push({ result: finalResult });
           await this.consumerGroup.ackMessageInConsumerGroup(ackPayload);
         } catch (e) {
           // failover queue logic

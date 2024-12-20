@@ -19,6 +19,7 @@ export default class RedisConsumerGroupProvider extends AbstractConsumerGroupPro
     queueName = '',
     consumerGroupName = '',
     consumerName = '',
+    count = 1,
   ): Promise<LooseObject[]> {
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
     if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name.');
@@ -29,7 +30,7 @@ export default class RedisConsumerGroupProvider extends AbstractConsumerGroupPro
       consumerGroupName,
       consumerName,
       'COUNT',
-      process.env.CONCURRENCY,
+      count,
       'STREAMS',
       queueName,
       '>',

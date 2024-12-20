@@ -8,6 +8,7 @@ export type CreateConsumerGroupPayload = {
 
 export type ConsumerGroupReadInputPayload = {
   consumerName: string;
+  count?: number;
 };
 
 export type AcknowledgeMessagePayload = {

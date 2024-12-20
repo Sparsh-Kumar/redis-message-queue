@@ -4,4 +4,7 @@ export type CallBackFunction = (data: LooseObject) => Promise<LooseObject> | Loo
 
 export type WorkerSubscriptionPayload = {
   callback: CallBackFunction;
+  breakOnCompletion?: boolean;
+  saveCompletionResult?: boolean;
+  count?: number;
 };
