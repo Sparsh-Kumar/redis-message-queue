@@ -28,6 +28,7 @@ export default class Worker extends AbstractWorker {
       count = +process.env.CONCURRENCY,
       breakOnCompletion = false,
       saveCompletionResult = false,
+      isFailOverWorker = false,
     } = params;
 
     while (true) {
@@ -59,7 +60,11 @@ export default class Worker extends AbstractWorker {
           if (saveCompletionResult) completionResultArr.push({ result: finalResult });
           await this.consumerGroup.ackMessageInConsumerGroup(ackPayload);
         } catch (e) {
-          await this.failOverQueue.addToQueue(item);
+          if (isFailOverWorker) {
+            // TODO: Send email notification to the admin email with payload information.
+          } else {
+            await this.failOverQueue.addToQueue(item);
+          }
         }
       }
     }

@@ -7,4 +7,5 @@ export type WorkerSubscriptionPayload = {
   breakOnCompletion?: boolean;
   saveCompletionResult?: boolean;
   count?: number;
+  isFailOverWorker?: boolean;
 };
