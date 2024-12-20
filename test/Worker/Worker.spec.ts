@@ -24,9 +24,11 @@ let sinonSandbox: sinon.SinonSandbox;
 let winstonLogger: WinstonLogger;
 let logger: Logger;
 let queueName: string;
+let failOverQueueName: string;
 let redisProvider: Redis;
 let queueProvider: RedisQueueProvider;
 let queue: Queue;
+let failOverQueue: Queue;
 let consumerGroupFirst = 'consumerGroup1';
 let consumerGroupSecond = 'consumerGroup2';
 let consumerGroupProvider: RedisConsumerGroupProvider;
@@ -57,6 +59,7 @@ describe('Worker:', () => {
 
     // Creation of the queue.
     queueName = `queue_${generateRandomName()}`;
+    failOverQueueName = `failover_${queueName}`;
     winstonLogger = new WinstonLogger();
     logger = new Logger(winstonLogger);
     redisProvider = new Redis({
@@ -65,6 +68,7 @@ describe('Worker:', () => {
     });
     queueProvider = new RedisQueueProvider(redisProvider, logger);
     queue = new Queue(queueName, queueProvider);
+    failOverQueue = new Queue(failOverQueueName, queueProvider);
 
     // Removing any existing streams with this name
     await redisProvider.del(queueName);
@@ -84,11 +88,11 @@ describe('Worker:', () => {
     await consumerGroupTwo.initialize();
 
     // Creation of worker instances for consumer group one.
-    workerOneConsumerGroupOne = new Worker(consumerGroupOne, workerOneConsumerGroupOneName);
-    workerTwoConsumerGroupOne = new Worker(consumerGroupOne, workerTwoConsumerGroupOneName);
+    workerOneConsumerGroupOne = new Worker(failOverQueue, consumerGroupOne, workerOneConsumerGroupOneName);
+    workerTwoConsumerGroupOne = new Worker(failOverQueue, consumerGroupOne, workerTwoConsumerGroupOneName);
 
     // Creation of worker instances for consumer group two.
-    workerOneConsumerGroupTwo = new Worker(consumerGroupTwo, workerOneConsumerGroupTwoName);
+    workerOneConsumerGroupTwo = new Worker(failOverQueue, consumerGroupTwo, workerOneConsumerGroupTwoName);
 
   });
 

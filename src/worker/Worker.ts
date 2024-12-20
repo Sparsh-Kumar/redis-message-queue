@@ -5,13 +5,16 @@ import { WorkerSubscriptionPayload } from './types';
 import AbstractWorker from './abstracts/AbstractWorker';
 import { LooseObject } from '../types';
 import ConsumerGroup from '../consumergroup/ConsumerGroup';
+import Queue from '../queue/Queue';
 
 export default class Worker extends AbstractWorker {
   constructor(
+    failOverQueue: Queue,
     consumerGroup: ConsumerGroup,
     consumerName = '',
   ) {
     super(
+      failOverQueue,
       consumerGroup,
       consumerName,
     );
@@ -56,7 +59,7 @@ export default class Worker extends AbstractWorker {
           if (saveCompletionResult) completionResultArr.push({ result: finalResult });
           await this.consumerGroup.ackMessageInConsumerGroup(ackPayload);
         } catch (e) {
-          // failover queue logic
+          await this.failOverQueue.addToQueue(item);
         }
       }
     }
