@@ -1,12 +1,8 @@
 import App from './app';
-import { ApplicationOptions, MorganLoggingTypes } from './helpers/types';
+import { ApplicationOptions } from './helpers/types';
 
 export default function bootstrap(): void {
-  const applicationOpts: ApplicationOptions = {
-    morganConfig: {
-      format: MorganLoggingTypes.COMBINED,
-    },
-  };
+  const applicationOpts: ApplicationOptions = {};
   /* eslint-disable no-new */
   new App(applicationOpts);
 }

@@ -1,9 +1,6 @@
-import { Server } from 'socket.io';
 import { ApplicationOptions } from './types';
 
 export default abstract class AbstractApplication {
-  protected socketIO: Server;
-
   protected readonly options: ApplicationOptions;
 
   constructor(options: ApplicationOptions) {

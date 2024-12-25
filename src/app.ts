@@ -7,13 +7,13 @@ export default class App extends AbstractApplication {
     /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
     const httpServer = createServer();
     const port = process.env.PORT || 8000;
-    this.socketIO = new Server(httpServer, {
+    const socketIO = new Server(httpServer, {
       cors: {
         origin: '*',
       },
     });
 
-    this.socketIO.on('connection', (socket: Socket) => {
+    socketIO.on('connection', (socket: Socket) => {
       console.log('A client connected:', socket.id);
 
       socket.on('message', (message: string) => {
@@ -27,6 +27,7 @@ export default class App extends AbstractApplication {
     });
 
     httpServer.listen(port, () => {
+      console.log(this.options);
       console.log(`Server is listening on port: ${port}`);
     });
   }
