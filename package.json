@@ -1,7 +1,7 @@
 {
-  "name": "message-queue",
+  "name": "message-queue-server",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "bootstrap.ts",
   "scripts": {
     "start:dev": "ts-node-dev --respawn --transpile-only --no-notify -r tsconfig-paths/register src/bootstrap.ts",
     "start:prod": "node ./dist/src/App.js",
