@@ -1,3 +1,5 @@
+import Events from '../events/events';
+import EventEmitter from '../events/emitter';
 import Queue from '../queue/Queue';
 import { LooseObject } from '../types';
 import AbstractConsumerGroupProvider from './abstracts/AbstractConsumerGroupProvider';
@@ -10,14 +12,34 @@ export default class ConsumerGroup {
 
   private readonly consumerGroupProvider: AbstractConsumerGroupProvider;
 
+  private readonly eventEmitter: EventEmitter;
+
   constructor(
     queue: Queue,
     consumerGroupProvider: AbstractConsumerGroupProvider,
     consumerGroupName: string,
+    eventEmitter: EventEmitter,
   ) {
     this.queue = queue;
     this.consumerGroupProvider = consumerGroupProvider;
     this.consumerGroupName = consumerGroupName;
+    this.eventEmitter = eventEmitter;
+    this.eventEmitter.on({
+      event: Events.INITIALIZE_CONSUMER_GROUP,
+      eventHandler: this.initialize.bind(this),
+    });
+    this.eventEmitter.on({
+      event: Events.READ_FROM_CONSUMER_GROUP,
+      eventHandler: this.readFromConsumerGroup.bind(this),
+    });
+    this.eventEmitter.on({
+      event: Events.ACK_MESSAGE_IN_CONSUMER_GROUP,
+      eventHandler: this.ackMessageInConsumerGroup.bind(this),
+    });
+    this.eventEmitter.on({
+      event: Events.DESTROY_CONSUMER_GROUP,
+      eventHandler: this.destroyConsumerGroup.bind(this),
+    });
   }
 
   public async initialize(): Promise<void> {
