@@ -1,8 +1,8 @@
-import express from 'express';
+import { Server } from 'socket.io';
 import { ApplicationOptions } from './types';
 
 export default abstract class AbstractApplication {
-  protected app: express.Application;
+  protected socketIO: Server;
 
   protected readonly options: ApplicationOptions;
 

@@ -1,22 +1,28 @@
-import express from 'express';
-import http from 'http';
-import { WebSocketServer } from 'ws';
-import morgan from 'morgan';
+import { createServer } from 'http';
+import { Server, Socket } from 'socket.io';
 import AbstractApplication from './helpers/AbstractApplication';
 
 export default class App extends AbstractApplication {
   public setup(): void {
-    this.app = express();
-    this.app.use(morgan(this.options.morganConfig.format));
-    const port = process.env.PORT || 8000;
-
     /* eslint-disable-next-line @typescript-eslint/no-misused-promises */
-    const httpServer = http.createServer(this.app);
-    const wss = new WebSocketServer({ server: httpServer });
+    const httpServer = createServer();
+    const port = process.env.PORT || 8000;
+    this.socketIO = new Server(httpServer, {
+      cors: {
+        origin: '*',
+      },
+    });
 
-    wss.on('connection', (ws) => {
-      ws.on('close', () => {
-        console.log('Connection closed.');
+    this.socketIO.on('connection', (socket: Socket) => {
+      console.log('A client connected:', socket.id);
+
+      socket.on('message', (message: string) => {
+        console.log('Received message:', message);
+        socket.emit('response', 'Message received!');
+      });
+
+      socket.on('disconnect', (reason) => {
+        console.log(`Client disconnected (${socket.id}):`, reason);
       });
     });
 
