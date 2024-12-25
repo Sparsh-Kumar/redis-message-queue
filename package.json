@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start:dev": "ts-node-dev --respawn --transpile-only --no-notify -r tsconfig-paths/register src/index.ts",
+    "start:dev": "ts-node-dev --respawn --transpile-only --no-notify -r tsconfig-paths/register src/bootstrap.ts",
     "start:prod": "node ./dist/src/App.js",
     "test": "mocha --exit -r ts-node/register --project tsconfig.json test/**/*.spec.ts",
     "pre-commit": "npm run lint:fix && npm run lint",
@@ -23,11 +23,13 @@
     }
   },
   "devDependencies": {
+    "@types/body-parser": "^1.19.5",
     "@types/chai": "^4.3.1",
     "@types/chai-as-promised": "^7.1.5",
     "@types/chai-http": "^4.2.0",
     "@types/cors": "^2.8.17",
     "@types/dotenv": "^8.2.3",
+    "@types/express": "^5.0.0",
     "@types/inversify-devtools": "^1.0.10",
     "@types/ioredis": "^5.0.0",
     "@types/joi": "^17.2.3",
@@ -36,6 +38,7 @@
     "@types/node": "^22.10.1",
     "@types/sinon": "^17.0.3",
     "@types/uuid": "^10.0.0",
+    "@types/ws": "^8.5.13",
     "@typescript-eslint/eslint-plugin": "^5.31.0",
     "@typescript-eslint/parser": "^5.31.0",
     "chai": "^4.3.6",
@@ -56,17 +59,22 @@
     "typescript": "^5.7.2"
   },
   "dependencies": {
+    "@types/morgan": "^1.9.9",
     "@types/winston": "^2.4.4",
+    "body-parser": "^1.20.3",
     "colorette": "^2.0.20",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
+    "express": "^4.21.2",
     "inversify": "^6.1.6",
     "ioredis": "^5.4.1",
     "joi": "^17.13.3",
     "lodash": "^4.17.21",
+    "morgan": "^1.10.0",
     "path": "^0.12.7",
     "reflect-metadata": "^0.2.2",
     "uuid": "^11.0.3",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "ws": "^8.18.0"
   }
 }
