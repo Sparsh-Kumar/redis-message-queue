@@ -16,6 +16,6 @@ export type CallBackFunction
 
 export type RedisMessageQueueConsumeParams = {
   callback: CallBackFunction;
-  failOverCallback: CallBackFunction;
+  failOverCallback?: CallBackFunction;
   count: number;
 };

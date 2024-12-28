@@ -105,7 +105,7 @@ export default class RedisMessageQueue {
       count = 1,
     }: {
       callback: CallBackFunction,
-      failOverCallback: CallBackFunction,
+      failOverCallback?: CallBackFunction,
       count: number
     } = params;
     const result = await this.ConsumerGroup.readFromConsumerGroupInBlockingMode({
