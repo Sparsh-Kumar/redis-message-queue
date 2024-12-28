@@ -17,6 +17,20 @@ export default class Queue {
     this.queueProvider = queueProvider;
   }
 
+  public async initialize(): Promise<void> {
+    const isQueueWithNameAlreadyExists = await this.isQueueAlreadyExists();
+    if (!isQueueWithNameAlreadyExists) {
+      await this.addToQueue({
+        queueInitialized: true,
+        queueName: this.name,
+      });
+    }
+  }
+
+  public async isQueueAlreadyExists(): Promise<boolean> {
+    return this.queueProvider.isQueueAlreadyExists(this.name);
+  }
+
   public async addToQueue(params: QueueAdditionPayload): Promise<string> {
     return this.queueProvider.addToQueue(this.name, params);
   }
@@ -29,7 +43,7 @@ export default class Queue {
     return this.queueProvider.deleteQueue(this.name);
   }
 
-  public async getConsumerGroups(): Promise<LooseObject> {
+  public async getConsumerGroups(): Promise<LooseObject[]> {
     return (this.queueProvider.getConsumerGroups(this.name));
   }
 

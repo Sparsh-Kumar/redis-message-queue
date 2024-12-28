@@ -4,11 +4,9 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiHttp from 'chai-http';
 import Redis from 'ioredis';
 import sinon from 'sinon';
-import Logger from '../../src/logger/Logger';
-import WinstonLogger from '../../src/logger/providers/WinstonLogger';
 import RedisQueueProvider from '../../src/queue/providers/RedisQueueProvider';
 import Queue from '../../src/queue/Queue';
-import generateRandomName from '../Helpers/Helper';
+import generateRandomName from '../../src/helpers/helper';
 import RedisConsumerGroupProvider from '../../src/consumergroup/providers/RedisConsumerGroupProvider';
 import ConsumerGroup from '../../src/consumergroup/ConsumerGroup';
 
@@ -18,8 +16,6 @@ chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
 let sinonSandbox: sinon.SinonSandbox;
-let winstonLogger: WinstonLogger;
-let logger: Logger;
 let queueName: string;
 let redisProvider: Redis;
 let queueProvider: RedisQueueProvider;
@@ -36,13 +32,11 @@ describe('ConsumerGroup:', () => {
 
     // Creation of the queue.
     queueName = `queue_${generateRandomName()}`;
-    winstonLogger = new WinstonLogger();
-    logger = new Logger(winstonLogger);
     redisProvider = new Redis({
       port: +process.env.REDIS_PORT,
       host: process.env.REDIS_HOST,
     });
-    queueProvider = new RedisQueueProvider(redisProvider, logger);
+    queueProvider = new RedisQueueProvider(redisProvider);
     queue = new Queue(queueName, queueProvider);
 
     // Removing any existing streams with this name
@@ -53,8 +47,9 @@ describe('ConsumerGroup:', () => {
 
 
 
+
     // Creation of consumerGroup provider & consumerGroup
-    consumerGroupProvider = new RedisConsumerGroupProvider(redisProvider, logger);
+    consumerGroupProvider = new RedisConsumerGroupProvider(redisProvider);
 
     // Consumer Group class initialization
     consumerGroupOne = new ConsumerGroup(queue, consumerGroupProvider, consumerGroupFirst);

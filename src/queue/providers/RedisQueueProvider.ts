@@ -6,6 +6,14 @@ import ExtendedError from '../../errors/base-error';
 import ErrorTypes from '../../errors/error-types';
 
 export default class RedisQueueProvider extends AbstractQueueProvider {
+  public async isQueueAlreadyExists(
+    queueName = '',
+  ): Promise<boolean> {
+    if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
+    const isQueueWithNameAlreadyExists: number = await this.queueProvider.exists(queueName);
+    return !!isQueueWithNameAlreadyExists;
+  }
+
   public async addToQueue(
     queueName = '',
     payload: LooseObject = {},
@@ -26,9 +34,11 @@ export default class RedisQueueProvider extends AbstractQueueProvider {
     await this.queueProvider.del(queueName);
   }
 
-  public async getConsumerGroups(queueName = ''): Promise<LooseObject> {
+  public async getConsumerGroups(queueName = ''): Promise<LooseObject[]> {
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
-    return (this.queueProvider.xinfo('GROUPS', queueName));
+    // eslint-disable-next-line @typescript-eslint/await-thenable
+    const consumerGroupsInfo: LooseObject[] = await <LooseObject[]>(<unknown>(this.queueProvider.xinfo('GROUPS', queueName)));
+    return consumerGroupsInfo;
   }
 
   public async consumerGroupInfo(
