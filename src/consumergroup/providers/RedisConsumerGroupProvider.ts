@@ -10,7 +10,7 @@ export default class RedisConsumerGroupProvider extends AbstractConsumerGroupPro
     consumerGroupName = '',
   ): Promise<string> {
     if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
-    if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name');
+    if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name.');
     await this.consumerGroupProvider.call('XGROUP', 'CREATE', queueName, consumerGroupName, '0', 'MKSTREAM');
     return consumerGroupName;
   }
@@ -29,6 +29,31 @@ export default class RedisConsumerGroupProvider extends AbstractConsumerGroupPro
       'GROUP',
       consumerGroupName,
       consumerName,
+      'COUNT',
+      count,
+      'STREAMS',
+      queueName,
+      '>',
+    );
+    return consumerGroupData;
+  }
+
+  public async readFromConsumerGroupInBlockingMode(
+    queueName = '',
+    consumerGroupName = '',
+    consumerName = '',
+    count = 1,
+  ): Promise<LooseObject[]> {
+    if (!queueName) throw new ExtendedError(ErrorTypes.QUEUE_ERROR, 'Please provide a non empty queue name.');
+    if (!consumerGroupName) throw new ExtendedError(ErrorTypes.CONSUMER_GROUP_ERROR, 'Please provide a non empty consumer group name.');
+    if (!consumerName) throw new ExtendedError(ErrorTypes.CONSUMER_ERROR, 'Please provide a non empty consumer name.');
+    const consumerGroupData = <LooseObject[]> await this.consumerGroupProvider.call(
+      'XREADGROUP',
+      'GROUP',
+      consumerGroupName,
+      consumerName,
+      'BLOCK',
+      0,
       'COUNT',
       count,
       'STREAMS',

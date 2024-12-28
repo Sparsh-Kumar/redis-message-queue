@@ -4,11 +4,9 @@ import chaiAsPromised from 'chai-as-promised';
 import chaiHttp from 'chai-http';
 import Redis from 'ioredis';
 import sinon from 'sinon';
-import Logger from '../../src/logger/Logger';
-import WinstonLogger from '../../src/logger/providers/WinstonLogger';
 import RedisQueueProvider from '../../src/queue/providers/RedisQueueProvider';
 import Queue from '../../src/queue/Queue';
-import generateRandomName from '../Helpers/Helper';
+import generateRandomName from '../../src/helpers/helper';
 
 dotenv.config();
 
@@ -16,8 +14,6 @@ chai.use(chaiHttp);
 chai.use(chaiAsPromised);
 
 let sinonSandbox: sinon.SinonSandbox;
-let winstonLogger: WinstonLogger;
-let logger: Logger;
 let queueName: string;
 let queueNameForDeletion: string;
 let redisProvider: Redis;
@@ -31,14 +27,13 @@ describe('Queue:', () => {
   before(async () => {
     queueName = `queue_${generateRandomName()}`;
     queueNameForDeletion = `queue_${generateRandomName()}`;
-    winstonLogger = new WinstonLogger();
-    logger = new Logger(winstonLogger);
     redisProvider = new Redis({
       port: +process.env.REDIS_PORT,
       host: process.env.REDIS_HOST,
     });
-    queueProvider = new RedisQueueProvider(redisProvider, logger);
+    queueProvider = new RedisQueueProvider(redisProvider);
     queue = new Queue(queueName, queueProvider);
+    queue.initialize();
 
     // Adding some value in the queueForDeletion, so that it gets initiated in Redis
     // We will just use this queue for testing the delete functionality.
@@ -81,7 +76,7 @@ describe('Queue:', () => {
 
   it('Queue: Fetching data from Queue.', async () => {
     const allRecords = await queue.fetchAllRecords();
-    expect(allRecords?.length || 0).to.equal(numberOfRecords);
+    expect(allRecords?.length || 0).to.equal(numberOfRecords + 1);
   });
 
   it('Queue: Deleting the Queue.', async () => {

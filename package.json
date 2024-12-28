@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start:dev": "ts-node-dev --respawn --transpile-only --no-notify -r tsconfig-paths/register src/App.ts",
+    "start:dev": "ts-node-dev --respawn --transpile-only --no-notify -r tsconfig-paths/register src/index.ts",
     "start:prod": "node ./dist/src/App.js",
     "test": "mocha --exit -r ts-node/register --project tsconfig.json test/**/*.spec.ts",
     "pre-commit": "npm run lint:fix && npm run lint",

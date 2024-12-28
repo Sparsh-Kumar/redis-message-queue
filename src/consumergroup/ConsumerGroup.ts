@@ -21,10 +21,27 @@ export default class ConsumerGroup {
   }
 
   public async initialize(): Promise<void> {
-    await this.consumerGroupProvider.createConsumerGroup(
-      this.queue.getName(),
-      this.consumerGroupName,
-    );
+    const isConsumerGroupAlreadyExists = await this.isConsumerGroupAlreadyExists();
+    if (!isConsumerGroupAlreadyExists) {
+      await this.consumerGroupProvider.createConsumerGroup(
+        this.queue.getName(),
+        this.consumerGroupName,
+      );
+    }
+  }
+
+  public async isConsumerGroupAlreadyExists(): Promise<boolean> {
+    let isConsumerGroupExists = false;
+    const existingConsumerGroups: LooseObject[] = await this.queue.getConsumerGroups();
+    const consumerGroupsInfo: string[] = <string[]>(existingConsumerGroups[0]);
+    if (consumerGroupsInfo && consumerGroupsInfo?.length) {
+      const consumerGroupName = consumerGroupsInfo[1];
+      isConsumerGroupExists = (
+        (consumerGroupName)
+        && (consumerGroupName === this.consumerGroupName)
+      );
+    }
+    return isConsumerGroupExists;
   }
 
   public async readFromConsumerGroup(
@@ -32,6 +49,18 @@ export default class ConsumerGroup {
   ): Promise<LooseObject[]> {
     const { consumerName = '', count = +process.env.CONCURRENCY } = params;
     return this.consumerGroupProvider.readFromConsumerGroup(
+      this.queue.getName(),
+      this.consumerGroupName,
+      consumerName,
+      count,
+    );
+  }
+
+  public async readFromConsumerGroupInBlockingMode(
+    params: ConsumerGroupReadInputPayload,
+  ): Promise<LooseObject[]> {
+    const { consumerName = '', count = +process.env.CONCURRENCY } = params;
+    return this.consumerGroupProvider.readFromConsumerGroupInBlockingMode(
       this.queue.getName(),
       this.consumerGroupName,
       consumerName,
