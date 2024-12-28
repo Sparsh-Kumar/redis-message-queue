@@ -101,9 +101,11 @@ export default class RedisMessageQueue {
     const defaultFunc = (arg) => { console.log(arg); };
     const {
       callback = defaultFunc,
+      failOverCallback = defaultFunc,
       count = 1,
     }: {
       callback: CallBackFunction,
+      failOverCallback: CallBackFunction,
       count: number
     } = params;
     const result = await this.ConsumerGroup.readFromConsumerGroupInBlockingMode({
@@ -121,10 +123,10 @@ export default class RedisMessageQueue {
     }
     for (let i = 0; i < items?.length; i += 1) {
       const item = items[i];
+      const [messageId = '', payloadInfo] = item;
+      const [message] = payloadInfo;
+      const parsedMessage = <LooseObject>(JSON.parse(message));
       try {
-        const [messageId = '', payloadInfo] = item;
-        const [message] = payloadInfo;
-        const parsedMessage = <LooseObject>(JSON.parse(message));
         const { queueInitialized, queueName } = parsedMessage;
         if (queueInitialized && queueName === this.Queue.getName()) continue;
         const ackPayload: AcknowledgeMessagePayload = {
@@ -134,12 +136,14 @@ export default class RedisMessageQueue {
         await this.ConsumerGroup.ackMessageInConsumerGroup(ackPayload);
       } catch (e) {
         if (this.failOverQueueHandling) {
-          await this.FailOverQueue.addToQueue(item);
+          await this.FailOverQueue.addToQueue(parsedMessage);
         }
+        await failOverCallback(parsedMessage);
       }
     }
     this.consume({
       callback,
+      failOverCallback,
       count,
     });
   }
