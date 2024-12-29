@@ -83,7 +83,6 @@ export default class RedisMessageQueue {
       this.redisConsumerGroupProvider,
       this.failOverRedisConsumerGroupName,
     );
-    this.initializeQueue();
   }
 
   public async initializeQueue(): Promise<void> {
@@ -102,14 +101,16 @@ export default class RedisMessageQueue {
     const {
       callback = defaultFunc,
       failOverCallback = defaultFunc,
+      consumerName = 'consumer',
       count = 1,
     }: {
       callback: CallBackFunction,
       failOverCallback?: CallBackFunction,
+      consumerName: string,
       count: number
     } = params;
     const result = await this.ConsumerGroup.readFromConsumerGroupInBlockingMode({
-      consumerName: this.redisConsumerGroupName,
+      consumerName,
       count,
     });
     let items: [string, [string]][] = [];
@@ -144,6 +145,7 @@ export default class RedisMessageQueue {
     this.consume({
       callback,
       failOverCallback,
+      consumerName,
       count,
     });
   }

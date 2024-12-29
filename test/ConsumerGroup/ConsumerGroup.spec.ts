@@ -36,8 +36,13 @@ describe('ConsumerGroup:', () => {
       port: +process.env.REDIS_PORT,
       host: process.env.REDIS_HOST,
     });
+
+    // Removing any existing streams with this name
+    await redisProvider.del(queueName);
+
     queueProvider = new RedisQueueProvider(redisProvider);
     queue = new Queue(queueName, queueProvider);
+    await queue.initialize();
 
     // Removing any existing streams with this name
     await redisProvider.del(queueName);

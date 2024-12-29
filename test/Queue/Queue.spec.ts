@@ -31,17 +31,20 @@ describe('Queue:', () => {
       port: +process.env.REDIS_PORT,
       host: process.env.REDIS_HOST,
     });
+
+    // Removing any existing streams with this name
+    await redisProvider.del(queueName);
+
     queueProvider = new RedisQueueProvider(redisProvider);
     queue = new Queue(queueName, queueProvider);
-    queue.initialize();
+    await queue.initialize();
 
     // Adding some value in the queueForDeletion, so that it gets initiated in Redis
     // We will just use this queue for testing the delete functionality.
     queueForDeletion = new Queue(queueNameForDeletion, queueProvider);
     await redisProvider.xadd(queueNameForDeletion, '*', JSON.stringify({ counter: 1 }), Math.random());
 
-    // Removing any existing streams with this name
-    await redisProvider.del(queueName);
+
   });
 
   beforeEach(() => {
