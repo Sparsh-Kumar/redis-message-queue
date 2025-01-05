@@ -4,6 +4,13 @@
 
 The Redis Message Queue is a straightforward implementation of message queues, utilizing Redis streams as the message broker.
 
+## Development Set Up
+- Clone the repository using ```git clone https://github.com/Sparsh-Kumar/redis-message-queue```
+- Go into cloned directory using ```cd {{cloned_path}}```
+- Do ```npm install```
+- Create a ```.env``` file in the root directory of the project.
+- Take reference from ```.env.sample``` file which environment variables are required.
+
 ## Usage
 
 ## Message Producer Sample Code
